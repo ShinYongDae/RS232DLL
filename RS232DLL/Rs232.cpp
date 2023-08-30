@@ -134,9 +134,19 @@ UINT CRs232::Rs232WatchProc(LPVOID lpData)
 				{
 					npRs232->SetReadData(InData);
 					//이곳에서 데이타를 받는다.
+
+					//// Verify DLL
+					//CString sM;
+					//sM.Format(_T("Receive data is %d-%d"), InData[0], nLength);
+					//AfxMessageBox(sM);
+
 				}
 			}
 			while ( nLength > 0 ) ;
+		}
+		else
+		{
+
 		}
 	}
 
@@ -368,7 +378,7 @@ int CRs232::ReadRs232Block(LPSTR lpszBlock, int nMaxLength )
 	BOOL       bReadStat ;
 	COMSTAT    ComStat ;
 	DWORD      dwErrorFlags;
-	DWORD      dwLength;
+	DWORD      dwLength, dwLength2;
 
 	// only try to read number of bytes in queue 
 	ClearCommError( m_hComDev, &dwErrorFlags, &ComStat ) ;
@@ -377,18 +387,19 @@ int CRs232::ReadRs232Block(LPSTR lpszBlock, int nMaxLength )
 	if (dwLength > 0)
 	{
 		bReadStat = ReadFile( m_hComDev, lpszBlock,
-							dwLength, &dwLength, &m_osRead ) ;
-		if (!bReadStat)
-		{
-			//이곳에 에라를 넣는것이다.
-			//즉 ReadFile 했을때 데이타가 제대로 안나오면 bReadState에 여러
-			//에라 코드를 리턴한다. 이때 복구할수있으면 좋지만 실질적인
-			//복구가 불가능하다 따라서 재송출을 해달라는 메세지를 해주는것이
-			//좋다.
+							dwLength, &dwLength2, &m_osRead ) ;
 
-			dwLength = 0;
-			ClearCommError( m_hComDev, &dwErrorFlags, &ComStat );
-		}
+		//if (!bReadStat)
+		//{
+		//	//이곳에 에라를 넣는것이다.
+		//	//즉 ReadFile 했을때 데이타가 제대로 안나오면 bReadState에 여러
+		//	//에라 코드를 리턴한다. 이때 복구할수있으면 좋지만 실질적인
+		//	//복구가 불가능하다 따라서 재송출을 해달라는 메세지를 해주는것이
+		//	//좋다.
+
+		//	dwLength = 0;
+		//	ClearCommError( m_hComDev, &dwErrorFlags, &ComStat );
+		//}
 	}
 
 	return ( dwLength ) ;
@@ -422,7 +433,6 @@ BOOL CRs232::DestroyRs232()
 
 BOOL CRs232::WriteRs232Block( LPSTR lpByte , DWORD dwBytesToWrite)
 {
-
 	BOOL        fWriteStat ;
 	DWORD       dwBytesWritten ;
 	char		*pBuff;
@@ -466,7 +476,7 @@ BOOL CRs232::WriteRs232Block( LPSTR lpByte , DWORD dwBytesToWrite)
 
 		delete pBuff;
 
-		if (!fWriteStat) 
+		if (!fWriteStat)
 		{
 			//컴포트에 데이타를 제대로 써넣지 못했을경우이다.
 			//이때는 어떻게 할까 그것은 사용자 마음이겠다.
