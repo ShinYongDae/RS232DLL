@@ -1,0 +1,10 @@
+Debug/
+ipch/
+x64/
+RS232DLL.sdf
+RS232DLL.VC.db
+RS232DLL/x64/
+.vs/
+RS232DLL/RS232DLL.aps
+
+
